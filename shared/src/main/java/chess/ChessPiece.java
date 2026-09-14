@@ -57,9 +57,9 @@ public class ChessPiece {
         ChessPiece piece = board.getPiece(myPosition);
         List<ChessMove> moves = new ArrayList<>();
         if (piece.getPieceType() == PieceType.BISHOP){
-            for (int i = myPosition.getRow(); 1 <= i && i <= 8; i++){
+            for (int i = myPosition.getRow(); 2 <= i && i <= 7; i++){
                 int nextRow = i + 1;
-                for (int j = myPosition.getColumn(); 1 <= j && j <= 8; j++){
+                for (int j = myPosition.getColumn(); 2 <= j && j <= 7; j++){
                     int nextCol = j + 1;
                     ChessPosition newPosition = new ChessPosition(nextRow, nextCol);
                     if(board.getPiece(newPosition)==null){
@@ -68,7 +68,7 @@ public class ChessPiece {
                     }
                     break;
                 }
-                for (int j = myPosition.getColumn(); 1 <= j && j <= 8; j--){
+                for (int j = myPosition.getColumn(); 2 <= j && j <= 7; j--){
                     int nextCol = j-1;
                     ChessPosition newPosition = new ChessPosition(nextRow, nextCol);
                     if(board.getPiece(newPosition)==null) {
@@ -78,9 +78,9 @@ public class ChessPiece {
                     break;
                 }
             }
-            for (int i = myPosition.getRow(); 1 <= i && i <= 8; i--){
-                int nextRow = i + 1;
-                for (int j = myPosition.getColumn(); 1 <= j && j <= 8; j++){
+            for (int i = myPosition.getRow(); 2 <= i && i <= 7; i--){
+                int nextRow = i - 1;
+                for (int j = myPosition.getColumn(); 2 <= j && j <= 7; j++){
                     int nextCol = j + 1;
                     ChessPosition newPosition = new ChessPosition(nextRow, nextCol);
                     if(board.getPiece(newPosition)==null) {
@@ -89,7 +89,7 @@ public class ChessPiece {
                     }
                     break;
                 }
-                for (int j = myPosition.getColumn(); 1 <= j && j <= 8; j--){
+                for (int j = myPosition.getColumn(); 2 <= j && j <= 7; j--){
                     int nextCol = j-1;
                     ChessPosition newPosition = new ChessPosition(nextRow, nextCol);
                     if(board.getPiece(newPosition)==null) {
