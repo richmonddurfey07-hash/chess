@@ -71,12 +71,24 @@ public class ChessPiece {
         ChessPiece piece = board.getPiece(myPosition);
         List<ChessMove> moves = new ArrayList<>();
         if (piece.getPieceType() == PieceType.BISHOP){
+            int blockedRU = 0;
+            int blockedRD = 0;
+            int blockedLU = 0;
+            int blockedLD = 0;
             for (int i = 1; i <= 7; i++){
                 int nextRow = i + myPosition.getRow();
                 int nextCol = i + myPosition.getColumn();
                 if(nextRow <= 8 && nextCol <= 8) {
                     ChessPosition newPosition = new ChessPosition(nextRow, nextCol);
-                    if (board.getPiece(newPosition) == null) {
+                    ChessPiece space = board.getPiece(newPosition);
+                    if (space!=null) {
+                        blockedRU = 1;
+                        if(space.getTeamColor()!=piece.getTeamColor()){
+                            ChessMove move = new ChessMove(myPosition, newPosition, null);
+                            moves.add(move);
+                        }
+                    }
+                    if (blockedRU == 0) {
                         ChessMove move = new ChessMove(myPosition, newPosition, null);
                         moves.add(move);
                     }
@@ -84,18 +96,34 @@ public class ChessPiece {
                 int negCol = myPosition.getColumn() - i;
                 if(nextRow <= 8 && negCol >= 1) {
                     ChessPosition newPosition = new ChessPosition(nextRow, negCol);
-                    if (board.getPiece(newPosition) == null) {
+                    ChessPiece space = board.getPiece(newPosition);
+                    if (space != null){
+                        blockedLU = 1;
+                        if(space.getTeamColor()!=piece.getTeamColor()){
+                            ChessMove move = new ChessMove(myPosition, newPosition, null);
+                            moves.add(move);
+                        }
+                    }
+                    if (blockedLU == 0) {
                         ChessMove move = new ChessMove(myPosition, newPosition, null);
                         moves.add(move);
                     }
                 }
             }
-            for (int i = 7; i >= 1; i--){
+            for (int i = 1; i <= 7; i++){
                 int nextRow = myPosition.getRow()-i;
                 int negCol = myPosition.getColumn()-i;
                 if(nextRow >= 1 && negCol >= 1) {
                     ChessPosition newPosition = new ChessPosition(nextRow, negCol);
-                    if (board.getPiece(newPosition) == null) {
+                    ChessPiece space = board.getPiece(newPosition);
+                    if (space != null){
+                        blockedLD = 1;
+                        if(space.getTeamColor()!=piece.getTeamColor()){
+                            ChessMove move = new ChessMove(myPosition, newPosition, null);
+                            moves.add(move);
+                        }
+                    }
+                    if (blockedLD == 0) {
                         ChessMove move = new ChessMove(myPosition, newPosition, null);
                         moves.add(move);
                     }
@@ -103,7 +131,15 @@ public class ChessPiece {
                 int posCol = i + myPosition.getColumn();
                 if(nextRow >=1 && posCol <=8) {
                     ChessPosition newPosition = new ChessPosition(nextRow, posCol);
-                    if (board.getPiece(newPosition) == null) {
+                    ChessPiece space = board.getPiece(newPosition);
+                    if (space != null){
+                        blockedRD = 1;
+                        if(space.getTeamColor()!=piece.getTeamColor()){
+                            ChessMove move = new ChessMove(myPosition, newPosition, null);
+                            moves.add(move);
+                        }
+                    }
+                    if (blockedRD == 0) {
                         ChessMove move = new ChessMove(myPosition, newPosition, null);
                         moves.add(move);
                     }
