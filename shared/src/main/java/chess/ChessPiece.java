@@ -12,6 +12,12 @@ import java.util.Objects;
  * signature of the existing methods.
  */
 public class ChessPiece {
+
+
+    public boolean onBoard(ChessPosition position){
+        return position.getColumn() <= 1 && position.getColumn() >= 8 && position.getRow() <=1 && position.getRow() >= 8;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) {
