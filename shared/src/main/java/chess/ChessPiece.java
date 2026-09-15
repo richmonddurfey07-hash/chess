@@ -3,6 +3,7 @@ package chess;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Represents a single chess piece
@@ -11,6 +12,19 @@ import java.util.List;
  * signature of the existing methods.
  */
 public class ChessPiece {
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ChessPiece that = (ChessPiece) o;
+        return pieceColor == that.pieceColor && type == that.type;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(pieceColor, type);
+    }
 
     private final ChessGame.TeamColor pieceColor;
     private final PieceType type;
@@ -57,46 +71,42 @@ public class ChessPiece {
         ChessPiece piece = board.getPiece(myPosition);
         List<ChessMove> moves = new ArrayList<>();
         if (piece.getPieceType() == PieceType.BISHOP){
-            for (int i = myPosition.getRow(); 2 <= i && i <= 7; i++){
-                int nextRow = i + 1;
-                for (int j = myPosition.getColumn(); 2 <= j && j <= 7; j++){
-                    int nextCol = j + 1;
+            for (int i = 1; i <= 7; i++){
+                int nextRow = i + myPosition.getRow();
+                int nextCol = i + myPosition.getColumn();
+                if(nextRow <= 8 && nextCol <= 8) {
                     ChessPosition newPosition = new ChessPosition(nextRow, nextCol);
-                    if(board.getPiece(newPosition)==null){
+                    if (board.getPiece(newPosition) == null) {
                         ChessMove move = new ChessMove(myPosition, newPosition, null);
                         moves.add(move);
                     }
-                    break;
                 }
-                for (int j = myPosition.getColumn(); 2 <= j && j <= 7; j--){
-                    int nextCol = j-1;
-                    ChessPosition newPosition = new ChessPosition(nextRow, nextCol);
-                    if(board.getPiece(newPosition)==null) {
+                int negCol = myPosition.getColumn() - i;
+                if(nextRow <= 8 && negCol >= 1) {
+                    ChessPosition newPosition = new ChessPosition(nextRow, negCol);
+                    if (board.getPiece(newPosition) == null) {
                         ChessMove move = new ChessMove(myPosition, newPosition, null);
                         moves.add(move);
                     }
-                    break;
                 }
             }
-            for (int i = myPosition.getRow(); 2 <= i && i <= 7; i--){
-                int nextRow = i - 1;
-                for (int j = myPosition.getColumn(); 2 <= j && j <= 7; j++){
-                    int nextCol = j + 1;
-                    ChessPosition newPosition = new ChessPosition(nextRow, nextCol);
-                    if(board.getPiece(newPosition)==null) {
+            for (int i = 7; i >= 1; i--){
+                int nextRow = myPosition.getRow()-i;
+                int negCol = myPosition.getColumn()-i;
+                if(nextRow >= 1 && negCol >= 1) {
+                    ChessPosition newPosition = new ChessPosition(nextRow, negCol);
+                    if (board.getPiece(newPosition) == null) {
                         ChessMove move = new ChessMove(myPosition, newPosition, null);
                         moves.add(move);
                     }
-                    break;
                 }
-                for (int j = myPosition.getColumn(); 2 <= j && j <= 7; j--){
-                    int nextCol = j-1;
-                    ChessPosition newPosition = new ChessPosition(nextRow, nextCol);
-                    if(board.getPiece(newPosition)==null) {
+                int posCol = i + myPosition.getColumn();
+                if(nextRow >=1 && posCol <=8) {
+                    ChessPosition newPosition = new ChessPosition(nextRow, posCol);
+                    if (board.getPiece(newPosition) == null) {
                         ChessMove move = new ChessMove(myPosition, newPosition, null);
                         moves.add(move);
                     }
-                    break;
                 }
             }
             return moves;
