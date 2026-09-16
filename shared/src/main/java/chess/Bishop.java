@@ -1,15 +1,8 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
-public class Bishop extends ChessPiece{
 
-    public Bishop(ChessGame.TeamColor pieceColor, PieceType type) {
-        super(pieceColor, type);
-    }
 
-    @Override
-    public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition position){
-        return null;
-    }
-}

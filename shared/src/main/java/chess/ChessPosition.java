@@ -39,12 +39,18 @@ public class ChessPosition {
         return row;
     }
 
+    //public void increaseRow(){row++;}
+
     /**
      * @return which column this position is in
      * 1 codes for the left column
      */
     public int getColumn() {
         return col;
+    }
+
+    public boolean onBoard(ChessPosition position) {
+        return position.getColumn() >= 1 && position.getColumn() <= 8 && position.getRow() >= 1 && position.getRow() <= 8;
     }
 
     @Override
