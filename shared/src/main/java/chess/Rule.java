@@ -42,8 +42,12 @@ public class Rule {
                 int col = myPosition.getColumn();
                 ChessPosition newPosition = new ChessPosition(row + direction[0], col + direction[1]);
                 if (newPosition.onBoard(newPosition)) {
-                    ChessMove newMove = new ChessMove(myPosition, newPosition, null);
-                    moves.add(newMove);
+                    ChessPiece piece = board.getPiece(myPosition);
+                    ChessPiece space = board.getPiece(newPosition);
+                    if(space==null || space.getTeamColor() != piece.getTeamColor()) {
+                        ChessMove newMove = new ChessMove(myPosition, newPosition, null);
+                        moves.add(newMove);
+                    }
                 }
             }
             return moves;
