@@ -89,6 +89,7 @@ public class Rule {
                 }
                     ChessPosition Attack1 = new ChessPosition(row+direction,col-1);
                     ChessPosition Attack2 = new ChessPosition(row+direction,col+1);
+                if (Attack1.onBoard(Attack1)) {
                     if(board.getPiece(Attack1)!=null && board.getPiece(Attack1).getTeamColor()!=piece.getTeamColor()){
                         if(Attack1.getRow() == promotion){
                             ChessMove move1 = new ChessMove(myPosition, Attack1, QUEEN);
@@ -106,8 +107,10 @@ public class Rule {
                             moves.add(move);
                         }
                     }
-                    if(board.getPiece(Attack2)!=null && board.getPiece(Attack2).getTeamColor()!=piece.getTeamColor()){
-                        if(Attack1.getRow() == 1){
+                }
+                if(Attack2.onBoard(Attack2)){
+                    if(board.getPiece(Attack2)!=null && board.getPiece(Attack2).getTeamColor()!=piece.getTeamColor()) {
+                        if (Attack1.getRow() == 1) {
                             ChessMove move = new ChessMove(myPosition, Attack2, QUEEN);
                             ChessMove move2 = new ChessMove(myPosition, Attack2, ROOK);
                             ChessMove move3 = new ChessMove(myPosition, Attack2, BISHOP);
@@ -117,12 +120,12 @@ public class Rule {
                             moves.add(move3);
                             moves.add(move4);
 
-                        }
-                        else{
+                        } else {
                             ChessMove move = new ChessMove(myPosition, Attack2, null);
                             moves.add(move);
                         }
                     }
+                }
                     ChessPosition newPosition = new ChessPosition(row + direction, col);
                     if(newPosition.getRow() == promotion){
                         ChessMove move = new ChessMove(myPosition, newPosition, QUEEN);
