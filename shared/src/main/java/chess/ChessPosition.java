@@ -39,7 +39,6 @@ public class ChessPosition {
         return row;
     }
 
-    //public void increaseRow(){row++;}
 
     /**
      * @return which column this position is in
