@@ -148,7 +148,7 @@ public class ChessGame {
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
         if(board.getPiece(move.getStartPosition())==null){
-            throw new InvalidMoveException("Invalid Move");
+            throw new InvalidMoveException("No Piece Selected");
         }
         ChessPiece piece = board.getPiece(move.getStartPosition());
         Collection<ChessMove> validMoves = validMoves(move.getStartPosition());
@@ -156,7 +156,7 @@ public class ChessGame {
             throw new InvalidMoveException("Invalid Move");
         }
         if(piece.getTeamColor()!=color){
-            throw new InvalidMoveException("Invalid Move");
+            throw new InvalidMoveException("Move Out of Turn");
         }
         if(move.getPromotionPiece()!=null){
              ChessPiece newPiece = new ChessPiece(piece.getTeamColor(),move.getPromotionPiece());
