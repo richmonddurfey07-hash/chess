@@ -114,17 +114,17 @@ public class ChessGame {
     }
 
     private Collection<ChessMove> findTeam(TeamColor teamColor, ChessBoard newBoard) {
-        Collection<ChessMove> TeamMoves = new ArrayList<>();
+        Collection<ChessMove> teamMoves = new ArrayList<>();
         for(int i = 1; i <=8; i++){
             for(int j=1; j<=8; j++){
                 ChessPosition position = new ChessPosition(i,j);
                 ChessPiece piece = newBoard.getPiece(position);
                 if(piece!=null && piece.getTeamColor()==teamColor) {
-                    TeamMoves.addAll(validMoves(position));
+                    teamMoves.addAll(validMoves(position));
                 }
             }
         }
-        return TeamMoves;
+        return teamMoves;
     }
 
     private ChessPosition findKing(TeamColor teamColor, ChessBoard newBoard) {

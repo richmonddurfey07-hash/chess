@@ -76,12 +76,12 @@ public class ChessBoard {
             }
         }
         for(int i = 1; i<= 8; i++){
-            ChessPosition BlackPosition = new ChessPosition(7,i);
+            ChessPosition blackPosition = new ChessPosition(7,i);
             ChessPiece black = new ChessPiece(BLACK,PAWN);
-            addPiece(BlackPosition,black);
-            ChessPosition WhitePosition = new ChessPosition(2,i);
+            addPiece(blackPosition,black);
+            ChessPosition whitePosition = new ChessPosition(2,i);
             ChessPiece white = new ChessPiece(WHITE,PAWN);
-            addPiece(WhitePosition,white);
+            addPiece(whitePosition,white);
         }
         ChessPosition blackRook = new ChessPosition(8,1);
         ChessPosition blackKnight = new ChessPosition(8,2);
@@ -128,14 +128,14 @@ public class ChessBoard {
     }
 
     public ChessBoard makeCopy() {
-        ChessBoard Copy = new ChessBoard();
+        ChessBoard copy = new ChessBoard();
         for(int i = 1; i<=8; i++){
             for(int j = 1; j<=8; j++){
                 ChessPosition position = new ChessPosition(i,j);
                 ChessPiece piece = getPiece(position);
-                Copy.addPiece(position,piece);
+                copy.addPiece(position,piece);
             }
         }
-        return Copy;
+        return copy;
     }
 }
