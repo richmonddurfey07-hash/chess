@@ -105,6 +105,20 @@ public class Server {
         }
     }
 
+    private void join(Context ctx){
+        try{
+            String authToken = ctx.header("Authorization");
+            GameData body = new Gson().fromJson(ctx.body(), (Type) GameData.class);
+            JoinRequest req = new JoinRequest(body.gameName(),authToken);
+            JoinResult res = gameService.join(req);
+            ctx.status(200);
+            ctx.result(new Gson().toJson(res));
+        } catch(DataAccessException e){
+            ctx.status(403);
+            ctx.result(new Gson().toJson(Map.of("message", "Error: " + e.getMessage())));
+        }
+    }
+
     public int run(int desiredPort) {
         javalin.start(desiredPort);
         return javalin.port();

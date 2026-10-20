@@ -6,6 +6,8 @@ import dataaccess.GameDAO;
 import dataaccess.UserDAO;
 import model.CreateRequest;
 import model.CreateResult;
+import model.JoinRequest;
+import model.JoinResult;
 
 public class GameService {
     private final AuthDAO authDAO;
@@ -24,5 +26,12 @@ public class GameService {
         }
         int id = gameDAO.createGame(req.gameName());
         return new CreateResult(id);
+    }
+
+    public JoinResult join(JoinRequest req) throws DataAccessException{
+        if(authDAO.getAuth(req.authToken())==null){
+            throw new DataAccessException("Error: unauthorized");
+        }
+        return new JoinResult();
     }
 }
