@@ -4,13 +4,17 @@ import com.google.gson.Gson;
 import dataaccess.*;
 import io.javalin.*;
 import io.javalin.http.Context;
+import model.LoginRequest;
+import model.LoginResult;
 import model.RegisterRequest;
 import model.RegisterResult;
-import org.jetbrains.annotations.NotNull;
 import service.ClearService;
+import service.LoginService;
 import service.RegisterService;
 
+import java.lang.reflect.Type;
 import java.util.Map;
+
 
 public class Server {
 
@@ -20,6 +24,7 @@ public class Server {
     private final GameDAO gameDAO;
     private final ClearService clearService;
     private final RegisterService registerService;
+    private final LoginService loginService;
 
     public Server() {
         authDAO = new MemoryAuthDAO();
@@ -29,11 +34,14 @@ public class Server {
 
 
         javalin = Javalin.create(config -> config.staticFiles.add("web"));
-        this.registerService = new RegisterService(userDAO, authDAO);
+        registerService = new RegisterService(userDAO, authDAO);
+        loginService = new LoginService(userDAO,authDAO);
 
         javalin.delete("/db", ctx-> clear(ctx));
 
         javalin.post("/user", ctx-> register(ctx));
+
+        javalin.post("/session",ctx->login(ctx));
         // Register your endpoints and exception handlers here.
 
     }
@@ -51,6 +59,18 @@ public class Server {
             ctx.status(200);
             ctx.result(new Gson().toJson(res));
         } catch (DataAccessException e) {
+            ctx.status(403);
+            ctx.result(new Gson().toJson(Map.of("message", "Error: " + e.getMessage())));
+        }
+    }
+
+    private void login(Context ctx){
+        try{
+            LoginRequest req = new Gson().fromJson(ctx.body(), LoginRequest.class);
+            LoginResult res = loginService.login(req);
+            ctx.status(200);
+            ctx.result(new Gson().toJson(res));
+        } catch (DataAccessException e){
             ctx.status(403);
             ctx.result(new Gson().toJson(Map.of("message", "Error: " + e.getMessage())));
         }
