@@ -4,10 +4,10 @@ import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
 import dataaccess.UserDAO;
-import model.CreateRequest;
-import model.CreateResult;
-import model.JoinRequest;
-import model.JoinResult;
+import model.*;
+
+import static chess.ChessGame.TeamColor.BLACK;
+import static chess.ChessGame.TeamColor.WHITE;
 
 public class GameService {
     private final AuthDAO authDAO;
@@ -31,6 +31,21 @@ public class GameService {
     public JoinResult join(JoinRequest req) throws DataAccessException{
         if(authDAO.getAuth(req.authToken())==null){
             throw new DataAccessException("Error: unauthorized");
+        }
+        if(gameDAO.getGame(req.gameID())==null){
+            throw new DataAccessException("Error: bad request");
+        }
+        GameData game = gameDAO.getGame(req.gameID());
+        if(req.color()==WHITE) {
+            GameData newGame = new GameData(game.gameID(),game.whiteUsername(),game.blackUsername(),game.gameName(),game.game());
+            gameDAO.updateGame(newGame);
+        }
+        if(req.color()==BLACK){
+            GameData newGame = new GameData(game.gameID(),game.whiteUsername(),game.blackUsername(),game.gameName(),game.game());
+            gameDAO.updateGame(newGame);
+        }
+        else{
+            throw new DataAccessException("Error: bad request");
         }
         return new JoinResult();
     }
