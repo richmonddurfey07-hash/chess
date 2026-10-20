@@ -51,7 +51,7 @@ public class Server {
             ctx.status(200);
             ctx.result(new Gson().toJson(res));
         } catch (DataAccessException e) {
-            ctx.status(500);
+            ctx.status(403);
             ctx.result(new Gson().toJson(Map.of("message", "Error: " + e.getMessage())));
         }
     }

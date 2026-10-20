@@ -12,8 +12,8 @@ public class RegisterService {
     private final UserDAO userDAO;
 
     public RegisterService(UserDAO userDAO, AuthDAO authDAO) {
-        this.authDAO = this.authDAO;
-        this.userDAO = this.userDAO;
+        this.authDAO = authDAO;
+        this.userDAO = userDAO;
     }
 
     public RegisterResult register(RegisterRequest req) throws DataAccessException{
