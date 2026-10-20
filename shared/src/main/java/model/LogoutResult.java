@@ -1,4 +1,3 @@
 package model;
 
-public record LogoutResult() {
-}
+public record LogoutResult() {}

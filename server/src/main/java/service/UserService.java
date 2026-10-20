@@ -10,5 +10,5 @@ public class UserService {
     public LoginResult login(LoginRequest loginRequest) {
         return null;
     }
-    public void logout(LogoutRequest logoutRequest) {}
+    public void logout(String authToken) {}
 }

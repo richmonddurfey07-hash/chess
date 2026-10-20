@@ -4,12 +4,10 @@ import com.google.gson.Gson;
 import dataaccess.*;
 import io.javalin.*;
 import io.javalin.http.Context;
-import model.LoginRequest;
-import model.LoginResult;
-import model.RegisterRequest;
-import model.RegisterResult;
+import model.*;
 import service.ClearService;
 import service.LoginService;
+import service.LogoutService;
 import service.RegisterService;
 
 import java.lang.reflect.Type;
@@ -25,6 +23,7 @@ public class Server {
     private final ClearService clearService;
     private final RegisterService registerService;
     private final LoginService loginService;
+    private final LogoutService logoutService;
 
     public Server() {
         authDAO = new MemoryAuthDAO();
@@ -36,12 +35,15 @@ public class Server {
         javalin = Javalin.create(config -> config.staticFiles.add("web"));
         registerService = new RegisterService(userDAO, authDAO);
         loginService = new LoginService(userDAO,authDAO);
+        logoutService = new LogoutService(authDAO);
 
         javalin.delete("/db", ctx-> clear(ctx));
 
         javalin.post("/user", ctx-> register(ctx));
 
         javalin.post("/session",ctx->login(ctx));
+
+        javalin.delete("/session", ctx->logout(ctx));
         // Register your endpoints and exception handlers here.
 
     }
@@ -68,6 +70,18 @@ public class Server {
         try{
             LoginRequest req = new Gson().fromJson(ctx.body(), LoginRequest.class);
             LoginResult res = loginService.login(req);
+            ctx.status(200);
+            ctx.result(new Gson().toJson(res));
+        } catch (DataAccessException e){
+            ctx.status(400);
+            ctx.result(new Gson().toJson(Map.of("message", "Error: " + e.getMessage())));
+        }
+    }
+
+    private void logout(Context ctx){
+        try{
+            String authToken = ctx.header("Authorization");
+            LogoutResult res = logoutService.logout(authToken);
             ctx.status(200);
             ctx.result(new Gson().toJson(res));
         } catch (DataAccessException e){
