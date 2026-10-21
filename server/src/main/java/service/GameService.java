@@ -24,7 +24,10 @@ public class GameService {
 
     public CreateResult create(CreateRequest req) throws DataAccessException {
         if(authDAO.getAuth(req.authToken())==null){
-            throw new DataAccessException("Error: unauthorized");
+            throw new DataAccessException("unauthorized");
+        }
+        if(authDAO.getAuth(req.authToken())==null){
+            throw new DataAccessException("bad request");
         }
         int id = gameDAO.createGame(req.gameName());
         return new CreateResult(id);
@@ -32,11 +35,11 @@ public class GameService {
 
     public JoinResult join(JoinRequest req) throws DataAccessException{
         if(authDAO.getAuth(req.authToken())==null){
-            throw new DataAccessException("Error: unauthorized");
+            throw new DataAccessException("unauthorized");
         }
         AuthData authData = authDAO.getAuth(req.authToken());
         if(gameDAO.getGame(req.gameID())==null){
-            throw new DataAccessException("Error: bad request");
+            throw new DataAccessException("bad request");
         }
         GameData game = gameDAO.getGame(req.gameID());
         if(req.color()==WHITE) {
@@ -48,14 +51,14 @@ public class GameService {
             gameDAO.updateGame(newGame);
         }
         else{
-            throw new DataAccessException("Error: bad request");
+            throw new DataAccessException("bad request");
         }
         return new JoinResult();
     }
 
     public ListResult ListGames(String authToken) throws DataAccessException{
         if(authDAO.getAuth(authToken)==null){
-            throw new DataAccessException("Error: unauthorized");
+            throw new DataAccessException("unauthorized");
         }
         Collection<GameData> games = gameDAO.listGames();
         return new ListResult(games);

@@ -17,8 +17,11 @@ public class RegisterService {
     }
 
     public RegisterResult register(RegisterRequest req) throws DataAccessException{
+        if(req.username()==null||req.password()==null||req.email()==null){
+            throw new DataAccessException("bad request");
+        }
         if(userDAO.getUser(req.username())!=null){
-            throw new DataAccessException("Error: already taken");
+            throw new DataAccessException("already taken");
         }
         UserData user = new UserData(req.username(),req.password(),req.email());
         userDAO.insertUser(user);

@@ -14,7 +14,7 @@ public class LogoutService {
 
     public LogoutResult logout(String authToken) throws DataAccessException {
         if(authDAO.getAuth(authToken)==null){
-            throw new DataAccessException("Error: unauthorized");
+            throw new DataAccessException("unauthorized");
         }
         authDAO.deleteAuth(authToken);
         return new LogoutResult();
