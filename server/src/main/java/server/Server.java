@@ -128,7 +128,7 @@ public class Server {
         try{
             String authToken = ctx.header("Authorization");
             JoinRequest body = new Gson().fromJson(ctx.body(), (Type) JoinRequest.class);
-            JoinRequest req = new JoinRequest(body.color(),body.gameID(),authToken);
+            JoinRequest req = new JoinRequest(body.playerColor(),body.gameID(),authToken);
             JoinResult res = gameService.join(req);
             ctx.status(200);
             ctx.result(new Gson().toJson(res));
@@ -154,7 +154,7 @@ public class Server {
             ctx.status(200);
             ctx.result(new Gson().toJson(res));
         } catch (DataAccessException e){
-            ctx.status(403);
+            ctx.status(401);
             ctx.result(new Gson().toJson(Map.of("message", "Error: " + e.getMessage())));
         }
     }

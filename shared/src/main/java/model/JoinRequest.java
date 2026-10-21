@@ -1,5 +1,4 @@
 package model;
 
-import chess.ChessGame;
 
-public record JoinRequest(ChessGame.TeamColor color, int gameID, String authToken) {}
+public record JoinRequest(String playerColor, int gameID, String authToken) {}

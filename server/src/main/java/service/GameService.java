@@ -42,15 +42,15 @@ public class GameService {
             throw new DataAccessException("bad request");
         }
         GameData game = gameDAO.getGame(req.gameID());
-        if(req.color()!=WHITE && req.color()!=BLACK){
+        if(req.playerColor() == null|| (!req.playerColor().equals("WHITE") && !req.playerColor().equals("BLACK"))){
             throw new DataAccessException("bad request");
         }
-        if((req.color() == WHITE) && (game.whiteUsername() == null)) {
+        if((req.playerColor().equals("WHITE")) && (game.whiteUsername() == null)) {
             GameData newGame = new GameData(game.gameID(),authData.username(),game.blackUsername(),game.gameName(),game.game());
             gameDAO.updateGame(newGame);
             return new JoinResult();
         }
-        if((req.color() == BLACK) && (game.blackUsername() == null)){
+        if((req.playerColor().equals("BLACK")) && (game.blackUsername()==null)){
             GameData newGame = new GameData(game.gameID(),game.whiteUsername(),authData.username(),game.gameName(),game.game());
             gameDAO.updateGame(newGame);
             return new JoinResult();
