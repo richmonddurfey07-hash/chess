@@ -23,11 +23,11 @@ public class GameService {
     }
 
     public CreateResult create(CreateRequest req) throws DataAccessException {
-        if(authDAO.getAuth(req.authToken())==null){
-            throw new DataAccessException("unauthorized");
+        if(req.gameName()==null){
+            throw new DataAccessException("bad request");
         }
         if(authDAO.getAuth(req.authToken())==null){
-            throw new DataAccessException("bad request");
+            throw new DataAccessException("unauthorized");
         }
         int id = gameDAO.createGame(req.gameName());
         return new CreateResult(id);
@@ -42,18 +42,22 @@ public class GameService {
             throw new DataAccessException("bad request");
         }
         GameData game = gameDAO.getGame(req.gameID());
-        if(req.color()==WHITE) {
-            GameData newGame = new GameData(game.gameID(),authData.username(),game.blackUsername(),game.gameName(),game.game());
-            gameDAO.updateGame(newGame);
-        }
-        if(req.color()==BLACK){
-            GameData newGame = new GameData(game.gameID(),game.whiteUsername(),authData.username(),game.gameName(),game.game());
-            gameDAO.updateGame(newGame);
-        }
-        else{
+        if(req.color()!=WHITE && req.color()!=BLACK){
             throw new DataAccessException("bad request");
         }
-        return new JoinResult();
+        if((req.color() == WHITE) && (game.whiteUsername() == null)) {
+            GameData newGame = new GameData(game.gameID(),authData.username(),game.blackUsername(),game.gameName(),game.game());
+            gameDAO.updateGame(newGame);
+            return new JoinResult();
+        }
+        if((req.color() == BLACK) && (game.blackUsername() == null)){
+            GameData newGame = new GameData(game.gameID(),game.whiteUsername(),authData.username(),game.gameName(),game.game());
+            gameDAO.updateGame(newGame);
+            return new JoinResult();
+        }
+        else{
+            throw new DataAccessException("already taken");
+        }
     }
 
     public ListResult ListGames(String authToken) throws DataAccessException{

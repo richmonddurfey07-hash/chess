@@ -117,6 +117,9 @@ public class Server {
             if(e.getMessage().equals("unauthorized")){
                 ctx.status(401);
             }
+            if(e.getMessage().equals("bad request")){
+                ctx.status(400);
+            }
             ctx.result(new Gson().toJson(Map.of("message", "Error: " + e.getMessage())));
         }
     }
@@ -133,6 +136,13 @@ public class Server {
             if(e.getMessage().equals("unauthorized")){
                 ctx.status(401);
             }
+            if(e.getMessage().equals("bad request")){
+                ctx.status(400);
+            }
+            if(e.getMessage().equals("already taken")){
+                ctx.status(403);
+            }
+
             ctx.result(new Gson().toJson(Map.of("message", "Error: " + e.getMessage())));
         }
     }
