@@ -19,7 +19,7 @@ public class MemoryGameDAO implements GameDAO{
     }
 
     @Override
-    public Collection<GameData> listGames(GameData game) throws DataAccessException {
+    public Collection<GameData> listGames() throws DataAccessException {
         return games.values();
     }
 

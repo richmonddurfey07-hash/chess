@@ -6,6 +6,8 @@ import dataaccess.GameDAO;
 import dataaccess.UserDAO;
 import model.*;
 
+import java.util.Collection;
+
 import static chess.ChessGame.TeamColor.BLACK;
 import static chess.ChessGame.TeamColor.WHITE;
 
@@ -49,5 +51,13 @@ public class GameService {
             throw new DataAccessException("Error: bad request");
         }
         return new JoinResult();
+    }
+
+    public ListResult ListGames(String authToken) throws DataAccessException{
+        if(authDAO.getAuth(authToken)==null){
+            throw new DataAccessException("Error: unauthorized");
+        }
+        Collection<GameData> games = gameDAO.listGames();
+        return new ListResult(games);
     }
 }

@@ -126,7 +126,7 @@ public class Server {
     private void list(Context ctx){
         try{
             String authToken = ctx.header("Authorization");
-            LogoutResult res = logoutService.logout(authToken);
+            ListResult res = gameService.ListGames(authToken);
             ctx.status(200);
             ctx.result(new Gson().toJson(res));
         } catch (DataAccessException e){
