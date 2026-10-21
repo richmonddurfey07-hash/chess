@@ -32,16 +32,17 @@ public class GameService {
         if(authDAO.getAuth(req.authToken())==null){
             throw new DataAccessException("Error: unauthorized");
         }
+        AuthData authData = authDAO.getAuth(req.authToken());
         if(gameDAO.getGame(req.gameID())==null){
             throw new DataAccessException("Error: bad request");
         }
         GameData game = gameDAO.getGame(req.gameID());
         if(req.color()==WHITE) {
-            GameData newGame = new GameData(game.gameID(),game.whiteUsername(),game.blackUsername(),game.gameName(),game.game());
+            GameData newGame = new GameData(game.gameID(),authData.username(),game.blackUsername(),game.gameName(),game.game());
             gameDAO.updateGame(newGame);
         }
         if(req.color()==BLACK){
-            GameData newGame = new GameData(game.gameID(),game.whiteUsername(),game.blackUsername(),game.gameName(),game.game());
+            GameData newGame = new GameData(game.gameID(),game.whiteUsername(),authData.username(),game.gameName(),game.game());
             gameDAO.updateGame(newGame);
         }
         else{
