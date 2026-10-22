@@ -60,7 +60,7 @@ public class GameService {
         }
     }
 
-    public ListResult ListGames(String authToken) throws DataAccessException{
+    public ListResult listGames(String authToken) throws DataAccessException{
         if(authDAO.getAuth(authToken)==null){
             throw new DataAccessException("unauthorized");
         }

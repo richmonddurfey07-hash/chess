@@ -53,6 +53,21 @@ public class Server {
 
     }
 
+    private void handleError(Context ctx, DataAccessException e) {
+        String message = e.getMessage();
+
+        switch (message) {
+            case "unauthorized" -> ctx.status(401);
+            case "bad request" -> ctx.status(400);
+            case "already taken" -> ctx.status(403);
+            default -> ctx.status(500);
+        }
+
+        ctx.result(new Gson().toJson(
+                Map.of("message", "Error: " + message)
+        ));
+    }
+
     private void clear(Context context) throws DataAccessException {
         clearService.clear();
         context.status(200);
@@ -66,13 +81,7 @@ public class Server {
             ctx.status(200);
             ctx.result(new Gson().toJson(res));
         } catch (DataAccessException e) {
-            if(e.getMessage().equals("already taken")){
-                ctx.status(403);
-            }
-            if(e.getMessage().equals("bad request")){
-                ctx.status(400);
-            }
-            ctx.result(new Gson().toJson(Map.of("message", "Error: " + e.getMessage())));
+            handleError(ctx,e);
         }
     }
 
@@ -83,13 +92,7 @@ public class Server {
             ctx.status(200);
             ctx.result(new Gson().toJson(res));
         } catch (DataAccessException e){
-            if(e.getMessage().equals("unauthorized")){
-                ctx.status(401);
-            }
-            if(e.getMessage().equals("bad request")){
-                ctx.status(400);
-            }
-            ctx.result(new Gson().toJson(Map.of("message", "Error: " + e.getMessage())));
+            handleError(ctx,e);
         }
     }
 
@@ -100,8 +103,7 @@ public class Server {
             ctx.status(200);
             ctx.result(new Gson().toJson(res));
         } catch (DataAccessException e){
-            ctx.status(401);
-            ctx.result(new Gson().toJson(Map.of("message", "Error: " + e.getMessage())));
+            handleError(ctx,e);
         }
     }
 
@@ -114,13 +116,7 @@ public class Server {
             ctx.status(200);
             ctx.result(new Gson().toJson(res));
         } catch(DataAccessException e){
-            if(e.getMessage().equals("unauthorized")){
-                ctx.status(401);
-            }
-            if(e.getMessage().equals("bad request")){
-                ctx.status(400);
-            }
-            ctx.result(new Gson().toJson(Map.of("message", "Error: " + e.getMessage())));
+            handleError(ctx,e);
         }
     }
 
@@ -133,29 +129,18 @@ public class Server {
             ctx.status(200);
             ctx.result(new Gson().toJson(res));
         } catch(DataAccessException e){
-            if(e.getMessage().equals("unauthorized")){
-                ctx.status(401);
-            }
-            if(e.getMessage().equals("bad request")){
-                ctx.status(400);
-            }
-            if(e.getMessage().equals("already taken")){
-                ctx.status(403);
-            }
-
-            ctx.result(new Gson().toJson(Map.of("message", "Error: " + e.getMessage())));
+            handleError(ctx,e);
         }
     }
 
     private void list(Context ctx){
         try{
             String authToken = ctx.header("Authorization");
-            ListResult res = gameService.ListGames(authToken);
+            ListResult res = gameService.listGames(authToken);
             ctx.status(200);
             ctx.result(new Gson().toJson(res));
         } catch (DataAccessException e){
-            ctx.status(401);
-            ctx.result(new Gson().toJson(Map.of("message", "Error: " + e.getMessage())));
+            handleError(ctx,e);
         }
     }
 
