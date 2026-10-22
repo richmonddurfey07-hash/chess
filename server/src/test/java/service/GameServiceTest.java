@@ -1,11 +1,13 @@
 package service;
 
+import chess.ChessGame;
 import dataaccess.*;
-import model.CreateRequest;
-import model.JoinRequest;
-import model.RegisterRequest;
+import model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+
+import java.util.Collection;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -39,5 +41,12 @@ class GameServiceTest {
         assertThrows(DataAccessException.class, () ->
                 gameService.join(new JoinRequest("WHITE", gameID,otherAuth))
         );
+    }
+
+    @Test
+    public void listGames() throws Exception{
+        int gameID = gameService.create(new CreateRequest("Game",validToken)).gameID();
+        ListResult games = gameService.listGames(validToken);
+        assertNotNull(games);
     }
 }
