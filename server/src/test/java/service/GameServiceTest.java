@@ -4,7 +4,6 @@ import dataaccess.*;
 import model.CreateRequest;
 import model.JoinRequest;
 import model.RegisterRequest;
-import model.RegisterResult;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -17,7 +16,6 @@ class GameServiceTest {
     private AuthDAO authDAO;
     private UserDAO userDAO;
     private GameDAO gameDAO;
-    private ClearService clearService;
     private String otherAuth;
 
     @BeforeEach
@@ -30,8 +28,8 @@ class GameServiceTest {
         registerService = new RegisterService(userDAO,authDAO);
         new ClearService(authDAO, userDAO, gameDAO).clear();
 
-        validToken = registerService.register(new RegisterRequest("p1", "pass", "e1")).authToken();
-        otherAuth = registerService.register(new RegisterRequest("p2", "pass", "e2")).authToken();
+        validToken = registerService.register(new RegisterRequest("p1", "pass", "email")).authToken();
+        otherAuth = registerService.register(new RegisterRequest("p2", "pass", "email2")).authToken();
     }
     @Test
     public void joinGameColorTaken() throws Exception {
