@@ -142,7 +142,8 @@ public class Rule {
         return moves;
     }
 
-    private void getAttackPiece(ChessPosition myPosition, ChessPosition attack1, ChessPiece piece, ChessBoard board,int promotion,Collection<ChessMove>moves) {
+    private void getAttackPiece(ChessPosition myPosition, ChessPosition attack1, ChessPiece piece,
+                                ChessBoard board,int promotion,Collection<ChessMove>moves) {
         if(board.getPiece(attack1)!=null && board.getPiece(attack1).getTeamColor()!=piece.getTeamColor()){
             if(attack1.getRow() == promotion){
                 promotionMoves(myPosition,attack1,moves);
