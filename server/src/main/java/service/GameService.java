@@ -42,7 +42,7 @@ public class GameService {
             throw new DataAccessException("bad request");
         }
         GameData game = gameDAO.getGame(req.gameID());
-        if(req.playerColor() == null|| (!req.playerColor().equals("WHITE") && !req.playerColor().equals("BLACK"))){
+        if(req.playerColor() == null || (!req.playerColor().equals("WHITE") && !req.playerColor().equals("BLACK"))){
             throw new DataAccessException("bad request");
         }
         if((req.playerColor().equals("WHITE")) && (game.whiteUsername() == null)) {

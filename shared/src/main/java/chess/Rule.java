@@ -73,7 +73,8 @@ public class Rule {
             ChessPiece.PieceType type = piece.getPieceType();
             if (type == PAWN) {
                 moves = pawnMoves(myPosition,piece,board);
-            } else {
+            }
+            else {
                 int[][] directions = getDirections();
                 for (int[] direction : directions) {
                     int row = myPosition.getRow();

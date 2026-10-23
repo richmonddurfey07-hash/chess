@@ -7,8 +7,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 
-import java.util.Collection;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class GameServiceTest {
@@ -48,5 +46,29 @@ class GameServiceTest {
         int gameID = gameService.create(new CreateRequest("Game",validToken)).gameID();
         ListResult games = gameService.listGames(validToken);
         assertNotNull(games);
+    }
+
+    @Test
+    public void listGamesUnsuccessful() throws Exception{
+        assertThrows(DataAccessException.class, () ->
+                gameService.create(new CreateRequest("Game","1")).gameID()
+        );
+
+    }
+
+    @Test
+    public void joinGameColorBad() throws Exception {
+        int gameID = gameService.create(new CreateRequest("Game",validToken)).gameID();
+        assertThrows(DataAccessException.class, () ->
+                gameService.join(new JoinRequest("GREEN", gameID,otherAuth))
+        );
+    }
+
+    @Test
+    public void joinBothGameColor() throws Exception {
+        int gameID = gameService.create(new CreateRequest("Game",validToken)).gameID();
+        gameService.join(new JoinRequest("WHITE", gameID,validToken));
+        assertEquals(new JoinResult(),
+                gameService.join(new JoinRequest("BLACK", gameID,otherAuth)));
     }
 }
