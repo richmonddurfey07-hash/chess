@@ -9,11 +9,8 @@ public class MemoryAuthDAO implements AuthDAO{
     private final HashMap<String, AuthData> authTokens = new HashMap<>();
 
     @Override
-    public String createAuth(String username) throws DataAccessException {
-        String authToken = UUID.randomUUID().toString();
-        AuthData authData = new AuthData(authToken, username);
-        authTokens.put(authToken, authData);
-        return authToken;
+    public void insertAuth(AuthData auth) throws DataAccessException {
+        authTokens.put(auth.authToken(), auth);
     }
 
     @Override

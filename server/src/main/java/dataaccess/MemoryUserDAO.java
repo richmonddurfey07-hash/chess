@@ -2,6 +2,7 @@ package dataaccess;
 
 import model.UserData;
 
+import java.sql.Connection;
 import java.util.HashMap;
 
 public class MemoryUserDAO implements UserDAO{

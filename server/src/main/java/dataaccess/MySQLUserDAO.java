@@ -4,11 +4,21 @@ import model.UserData;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 public class MySQLUserDAO implements UserDAO{
     @Override
     public void insertUser(UserData user) throws DataAccessException {
-
+        try (Connection conn = DatabaseManager.getConnection();
+             var preparedStatement = conn.prepareStatement("INSERT INTO user (username, password, email) VALUES(?, ?, ?)",
+                     Statement.RETURN_GENERATED_KEYS)) {
+            preparedStatement.setString(1, user.username());
+            preparedStatement.setString(2, user.password());
+            preparedStatement.setString(3,user.email());
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     @Override

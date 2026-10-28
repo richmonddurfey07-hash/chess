@@ -3,9 +3,9 @@ package service;
 import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
 import dataaccess.UserDAO;
-import model.RegisterRequest;
-import model.RegisterResult;
-import model.UserData;
+import model.*;
+
+import java.util.UUID;
 
 public class RegisterService {
     private final AuthDAO authDAO;
@@ -25,7 +25,9 @@ public class RegisterService {
         }
         UserData user = new UserData(req.username(),req.password(),req.email());
         userDAO.insertUser(user);
-        String authToken = authDAO.createAuth(req.username());
+        String authToken = UUID.randomUUID().toString();
+        AuthData authData = new AuthData(authToken, req.username());
+        authDAO.insertAuth(authData);
         return new RegisterResult(req.username(),authToken);
     }
 }

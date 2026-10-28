@@ -4,11 +4,21 @@ import model.AuthData;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.UUID;
 
 public class MySQLAuthDAO implements AuthDAO {
     @Override
-    public String createAuth(String username) throws DataAccessException {
-        return "";
+    public void insertAuth(AuthData auth) throws DataAccessException {
+        try (Connection conn = DatabaseManager.getConnection();
+             var preparedStatement = conn.prepareStatement("INSERT INTO user (username, authToken) VALUES(?, ?)",
+                     Statement.RETURN_GENERATED_KEYS)) {
+            preparedStatement.setString(1, auth.username());
+            preparedStatement.setString(2, auth.authToken());
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     @Override

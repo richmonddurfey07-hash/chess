@@ -3,11 +3,13 @@ package service;
 import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
 import dataaccess.UserDAO;
+import model.AuthData;
 import model.LoginRequest;
 import model.LoginResult;
 import model.UserData;
 
 import java.util.Objects;
+import java.util.UUID;
 
 public class LoginService {
     private final AuthDAO authDAO;
@@ -27,7 +29,9 @@ public class LoginService {
             throw new DataAccessException("unauthorized");
         }
         userDAO.insertUser(user);
-        String authToken = authDAO.createAuth(req.username());
+        String authToken = UUID.randomUUID().toString();
+        AuthData authData = new AuthData(authToken, req.username());
+        authDAO.insertAuth(authData);
         return new LoginResult(req.username(),authToken);
     }
 }
