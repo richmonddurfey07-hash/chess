@@ -4,6 +4,7 @@ import dataaccess.*;
 import model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mindrot.jbcrypt.BCrypt;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -27,9 +28,9 @@ class LoginServiceTest {
         registerService = new RegisterService(userDAO,authDAO);
         new ClearService(authDAO, userDAO, gameDAO).clear();
 
-        res = registerService.register(new RegisterRequest("p1", "pass", "email"));
+        res = registerService.register(new RegisterRequest("p1", BCrypt.hashpw("pass", BCrypt.gensalt()), "email"));
         user = userDAO.getUser(res.username());
-        res2 = registerService.register(new RegisterRequest("p2", "pass2", "email2"));
+        res2 = registerService.register(new RegisterRequest("p2", BCrypt.hashpw("pass2", BCrypt.gensalt()), "email2"));
         user2 = userDAO.getUser(res2.username());
 
     }
@@ -41,7 +42,7 @@ class LoginServiceTest {
 
     @Test
     public void loginSuccess() throws Exception{
-        LoginResult result = loginService.login(new LoginRequest(res.username(),user.password()));
+        LoginResult result = loginService.login(new LoginRequest(res.username(),"pass"));
         assertEquals(result.username(),user.username());
     }
 }
