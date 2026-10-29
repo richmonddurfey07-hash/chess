@@ -1,15 +1,13 @@
-package dataaccess.sql;
+package service;
 
 import dataaccess.*;
 import model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mindrot.jbcrypt.BCrypt;
-import service.ClearService;
-import service.LoginService;
-import service.RegisterService;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class LoginServiceTest {
     private RegisterService registerService;

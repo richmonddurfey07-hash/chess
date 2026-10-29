@@ -1,14 +1,15 @@
-package dataaccess.sql;
+package service;
 
 import dataaccess.*;
-import model.*;
+import model.LogoutResult;
+import model.RegisterRequest;
+import model.RegisterResult;
+import model.UserData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import service.ClearService;
-import service.LogoutService;
-import service.RegisterService;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class LogoutServiceTest {
     private RegisterService registerService;
