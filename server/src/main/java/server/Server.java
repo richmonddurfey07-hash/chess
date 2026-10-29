@@ -25,13 +25,10 @@ public class Server {
 
     public Server() {
         try{
-            DatabaseManager.createDatabase();
+            DatabaseManager.createDataTable();
             authDAO = new MySQLAuthDAO();
             userDAO = new MySQLUserDAO();
             gameDAO = new MySQLGameDAO();
-            userDAO.configureDatabase();
-            authDAO.configureDatabase();
-            gameDAO.configureDatabase();
         }catch(DataAccessException e){
             throw new RuntimeException("Failed to initialize database: " + e.getMessage());
         }
@@ -77,9 +74,14 @@ public class Server {
     }
 
     private void clear(Context context) throws DataAccessException {
-        clearService.clear();
-        context.status(200);
-        context.result("{}");
+        try{
+            clearService.clear();
+            context.status(200);
+            context.result("{}");
+        } catch(DataAccessException e){
+            handleError(context,e);
+        }
+
     }
 
     private void register(Context ctx) {

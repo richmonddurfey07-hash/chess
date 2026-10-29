@@ -1,9 +1,12 @@
-package service;
+package dataaccess.sql;
 
 import dataaccess.*;
 import model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import service.ClearService;
+import service.LogoutService;
+import service.RegisterService;
 
 import static org.junit.jupiter.api.Assertions.*;
 

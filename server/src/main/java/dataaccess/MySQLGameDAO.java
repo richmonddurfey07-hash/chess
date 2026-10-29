@@ -85,7 +85,7 @@ public class MySQLGameDAO implements GameDAO {
              var preparedStatement = conn.prepareStatement(statement);) {
             preparedStatement.executeUpdate();
         } catch(SQLException e){
-            throw new DataAccessException(e.getMessage());
+            throw new DataAccessException("unauthorized");
         }
 
     }
@@ -113,29 +113,4 @@ public class MySQLGameDAO implements GameDAO {
         return null;
     }
 
-    private final String[] createStatements = {
-            """
-            CREATE TABLE IF NOT EXISTS  game (
-              gameID int NOT NULL AUTO_INCREMENT,
-              whiteUsername varchar(256),
-              blackUsername varchar(256),
-              gameName varchar(256) NOT NULL,
-              json TEXT NOT NULL,
-              PRIMARY KEY (gameID)
-            )
-            """
-    };
-
-    public void configureDatabase() throws DataAccessException {
-        DatabaseManager.createDatabase();
-        try (Connection conn = DatabaseManager.getConnection()) {
-            for (String statement : createStatements) {
-                try (var preparedStatement = conn.prepareStatement(statement)) {
-                    preparedStatement.executeUpdate();
-                }
-            }
-        } catch (SQLException ex) {
-            throw new DataAccessException("Unauthorized");
-        }
-    }
 }

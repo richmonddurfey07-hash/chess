@@ -61,31 +61,8 @@ public class MySQLAuthDAO implements AuthDAO {
              var preparedStatement = conn.prepareStatement(statement);) {
             preparedStatement.executeUpdate();
         } catch(SQLException e){
-            throw new DataAccessException(e.getMessage());
+            throw new DataAccessException("unauthorized");
         }
 
-    }
-    private final String[] createStatements = {
-            """
-            CREATE TABLE IF NOT EXISTS  auth (
-              authToken varchar(256) NOT NULL,
-              username varchar(256) NOT NULL,
-              PRIMARY KEY (authToken),
-              FOREIGN KEY(username) REFERENCES user(username)
-            )
-            """
-    };
-
-    public void configureDatabase() throws DataAccessException {
-        DatabaseManager.createDatabase();
-        try (Connection conn = DatabaseManager.getConnection()) {
-            for (String statement : createStatements) {
-                try (var preparedStatement = conn.prepareStatement(statement)) {
-                    preparedStatement.executeUpdate();
-                }
-            }
-        } catch (SQLException ex) {
-            throw new DataAccessException(String.format("Unable to configure database: %s", ex.getMessage()));
-        }
     }
 }

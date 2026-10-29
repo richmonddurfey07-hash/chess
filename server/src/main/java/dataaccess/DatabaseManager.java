@@ -1,5 +1,6 @@
 package dataaccess;
 
+import javax.xml.crypto.Data;
 import java.sql.*;
 import java.util.Properties;
 
@@ -75,7 +76,45 @@ public class DatabaseManager {
         connectionUrl = String.format("jdbc:mysql://%s:%d", host, port);
     }
 
-    private static void createDataTable(){
+    private static final String[] createStatements = {
+            """
+            CREATE TABLE IF NOT EXISTS  user (
+              username varchar(256) NOT NULL,
+              password varchar(256) NOT NULL,
+              email varchar(256) NOT NULL,
+              PRIMARY KEY (username)
+            )
+            """,
+            """
+            CREATE TABLE IF NOT EXISTS  game (
+              gameID int NOT NULL AUTO_INCREMENT,
+              whiteUsername varchar(256),
+              blackUsername varchar(256),
+              gameName varchar(256) NOT NULL,
+              json TEXT NOT NULL,
+              PRIMARY KEY (gameID)
+            )
+            """,
+            """
+            CREATE TABLE IF NOT EXISTS  auth (
+              authToken varchar(256) NOT NULL,
+              username varchar(256) NOT NULL,
+              PRIMARY KEY (authToken),
+              FOREIGN KEY(username) REFERENCES user(username)
+            )
+            """
+    };
 
+    public static void createDataTable() throws DataAccessException {
+        DatabaseManager.createDatabase();
+        try (Connection conn = DatabaseManager.getConnection()) {
+            for (String statement : createStatements) {
+                try (var preparedStatement = conn.prepareStatement(statement)) {
+                    preparedStatement.executeUpdate();
+                }
+            }
+        } catch (SQLException ex) {
+            throw new DataAccessException("Unauthorized");
+        }
     }
 }
