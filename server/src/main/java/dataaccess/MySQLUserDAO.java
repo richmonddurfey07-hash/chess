@@ -46,9 +46,9 @@ public class MySQLUserDAO implements UserDAO{
 
     @Override
     public void clear() throws DataAccessException {
-        var statement = "TRUNCATE user";
-        try (Connection conn = DatabaseManager.getConnection();) {
-            var preparedStatement = conn.prepareStatement(statement);
+        var statement = "DELETE FROM user";
+        try (Connection conn = DatabaseManager.getConnection();
+             var preparedStatement = conn.prepareStatement(statement);) {
             preparedStatement.executeUpdate();
         } catch(SQLException e){
             throw new DataAccessException(e.getMessage());
@@ -68,7 +68,7 @@ public class MySQLUserDAO implements UserDAO{
             """
     };
 
-    private void configureDatabase() throws DataAccessException {
+    public void configureDatabase() throws DataAccessException {
         DatabaseManager.createDatabase();
         try (Connection conn = DatabaseManager.getConnection()) {
             for (String statement : createStatements) {

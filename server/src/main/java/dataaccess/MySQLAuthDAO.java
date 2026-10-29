@@ -10,10 +10,10 @@ public class MySQLAuthDAO implements AuthDAO {
     @Override
     public void insertAuth(AuthData auth) throws DataAccessException {
         try (Connection conn = DatabaseManager.getConnection();
-             var preparedStatement = conn.prepareStatement("INSERT INTO user (username, authToken) VALUES(?, ?)",
+             var preparedStatement = conn.prepareStatement("INSERT INTO auth (authToken,username) VALUES(?, ?)",
                      Statement.RETURN_GENERATED_KEYS)) {
-            preparedStatement.setString(1, auth.username());
-            preparedStatement.setString(2, auth.authToken());
+            preparedStatement.setString(1, auth.authToken());
+            preparedStatement.setString(2, auth.username());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());
@@ -55,26 +55,28 @@ public class MySQLAuthDAO implements AuthDAO {
     }
 
     @Override
-    public void clear() throws DataAccessException{
-        var statement = "TRUNCATE auth";
-        try (Connection conn = DatabaseManager.getConnection()) {
-            var preparedStatement = conn.prepareStatement(statement);
+    public void clear() throws DataAccessException {
+        var statement = "DELETE FROM auth";
+        try (Connection conn = DatabaseManager.getConnection();
+             var preparedStatement = conn.prepareStatement(statement);) {
             preparedStatement.executeUpdate();
         } catch(SQLException e){
             throw new DataAccessException(e.getMessage());
         }
+
     }
     private final String[] createStatements = {
             """
             CREATE TABLE IF NOT EXISTS  auth (
               authToken varchar(256) NOT NULL,
-              PRIMARY KEY (authToken)
+              username varchar(256) NOT NULL,
+              PRIMARY KEY (authToken),
               FOREIGN KEY(username) REFERENCES user(username)
             )
             """
     };
 
-    private void configureDatabase() throws DataAccessException {
+    public void configureDatabase() throws DataAccessException {
         DatabaseManager.createDatabase();
         try (Connection conn = DatabaseManager.getConnection()) {
             for (String statement : createStatements) {
@@ -83,7 +85,7 @@ public class MySQLAuthDAO implements AuthDAO {
                 }
             }
         } catch (SQLException ex) {
-            throw new DataAccessException("Unauthorized");
+            throw new DataAccessException(String.format("Unable to configure database: %s", ex.getMessage()));
         }
     }
 }

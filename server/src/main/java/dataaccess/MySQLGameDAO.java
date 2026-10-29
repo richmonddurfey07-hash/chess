@@ -47,14 +47,15 @@ public class MySQLGameDAO implements GameDAO {
     }
 
     @Override
-    public void clear() throws DataAccessException{
-        var statement = "TRUNCATE game";
-        try (Connection conn = DatabaseManager.getConnection()) {
-            var preparedStatement = conn.prepareStatement(statement);
+    public void clear() throws DataAccessException {
+        var statement = "DELETE FROM game";
+        try (Connection conn = DatabaseManager.getConnection();
+             var preparedStatement = conn.prepareStatement(statement);) {
             preparedStatement.executeUpdate();
         } catch(SQLException e){
             throw new DataAccessException(e.getMessage());
         }
+
     }
 
     @Override
@@ -90,7 +91,7 @@ public class MySQLGameDAO implements GameDAO {
             """
     };
 
-    private void configureDatabase() throws DataAccessException {
+    public void configureDatabase() throws DataAccessException {
         DatabaseManager.createDatabase();
         try (Connection conn = DatabaseManager.getConnection()) {
             for (String statement : createStatements) {

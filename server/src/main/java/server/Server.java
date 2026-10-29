@@ -14,9 +14,9 @@ import java.util.Map;
 public class Server {
 
     private final Javalin javalin;
-    private final AuthDAO authDAO;
-    private final UserDAO userDAO;
-    private final GameDAO gameDAO;
+    private final MySQLAuthDAO authDAO;
+    private final MySQLUserDAO userDAO;
+    private final MySQLGameDAO gameDAO;
     private final ClearService clearService;
     private final RegisterService registerService;
     private final LoginService loginService;
@@ -24,9 +24,17 @@ public class Server {
     private final GameService gameService;
 
     public Server() {
-        authDAO = new MemoryAuthDAO();
-        userDAO = new MemoryUserDAO();
-        gameDAO = new MemoryGameDAO();
+        try{
+            DatabaseManager.createDatabase();
+            authDAO = new MySQLAuthDAO();
+            userDAO = new MySQLUserDAO();
+            gameDAO = new MySQLGameDAO();
+            userDAO.configureDatabase();
+            authDAO.configureDatabase();
+            gameDAO.configureDatabase();
+        }catch(DataAccessException e){
+            throw new RuntimeException("Failed to initialize database: " + e.getMessage());
+        }
         clearService = new ClearService(authDAO,userDAO, gameDAO);
 
 
@@ -144,7 +152,7 @@ public class Server {
         }
     }
 
-    public int run(int desiredPort) {
+    public int run(int desiredPort){
         javalin.start(desiredPort);
         return javalin.port();
     }

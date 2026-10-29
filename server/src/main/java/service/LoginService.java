@@ -7,6 +7,7 @@ import model.AuthData;
 import model.LoginRequest;
 import model.LoginResult;
 import model.UserData;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -25,12 +26,11 @@ public class LoginService {
             throw new DataAccessException("bad request");
         }
         UserData user = userDAO.getUser(req.username());
-        if(user==null|| !Objects.equals(user.password(), req.password())){
+        if(user==null || !BCrypt.checkpw(req.password(),user.password())){
             throw new DataAccessException("unauthorized");
         }
-        userDAO.insertUser(user);
         String authToken = UUID.randomUUID().toString();
-        AuthData authData = new AuthData(authToken, req.username());
+        AuthData authData = new AuthData(authToken, user.username());
         authDAO.insertAuth(authData);
         return new LoginResult(req.username(),authToken);
     }
