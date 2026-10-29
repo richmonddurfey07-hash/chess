@@ -46,7 +46,7 @@ public class MySQLUserDAO implements UserDAO{
 
     @Override
     public void clear() throws DataAccessException {
-        var statement = "TRUNCATE pet";
+        var statement = "TRUNCATE user";
         try (Connection conn = DatabaseManager.getConnection();) {
             var preparedStatement = conn.prepareStatement(statement);
             preparedStatement.executeUpdate();
