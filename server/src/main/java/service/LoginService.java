@@ -26,6 +26,7 @@ public class LoginService {
             throw new DataAccessException("bad request");
         }
         UserData user = userDAO.getUser(req.username());
+        System.out.println(BCrypt.hashpw("pass", BCrypt.gensalt()));
         if(user==null || !BCrypt.checkpw(req.password(),user.password())){
             throw new DataAccessException("unauthorized");
         }

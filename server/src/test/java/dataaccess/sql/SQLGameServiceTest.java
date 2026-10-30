@@ -73,4 +73,10 @@ class SQLGameServiceTest {
         assertEquals(new JoinResult(),
                 gameService.join(new JoinRequest("BLACK", gameID,otherAuth)));
     }
+
+    @Test
+    public void createGameSQL() throws Exception{
+        assertThrows(DataAccessException.class, () ->
+                gameService.create(new CreateRequest("blah","auth")));
+    }
 }

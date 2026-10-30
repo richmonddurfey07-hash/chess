@@ -1,10 +1,11 @@
-package dataaccess;
+package dataaccess.sql;
 
+import dataaccess.AuthDAO;
+import dataaccess.DataAccessException;
+import dataaccess.DatabaseManager;
 import model.AuthData;
-import model.UserData;
 
 import java.sql.*;
-import java.util.UUID;
 
 public class MySQLAuthDAO implements AuthDAO {
     @Override

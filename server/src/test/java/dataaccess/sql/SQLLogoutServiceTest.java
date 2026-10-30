@@ -24,9 +24,9 @@ class SQLLogoutServiceTest {
 
     @BeforeEach
     public void setup() throws DataAccessException {
-        authDAO = new MemoryAuthDAO();
-        userDAO = new MemoryUserDAO();
-        gameDAO = new MemoryGameDAO();
+        authDAO = new MySQLAuthDAO();
+        userDAO = new MySQLUserDAO();
+        gameDAO = new MySQLGameDAO();
         logoutService = new LogoutService(authDAO);
         registerService = new RegisterService(userDAO,authDAO);
         new ClearService(authDAO, userDAO, gameDAO).clear();
@@ -46,6 +46,7 @@ class SQLLogoutServiceTest {
 
     @Test
     public void logoutSuccessSQL() throws Exception{
+
         LogoutResult result = logoutService.logout(res.authToken());
         assertNotNull(result);
     }

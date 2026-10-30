@@ -24,16 +24,16 @@ class SQLLoginServiceTest {
 
     @BeforeEach
     public void setup() throws DataAccessException {
-        authDAO = new MemoryAuthDAO();
-        userDAO = new MemoryUserDAO();
-        gameDAO = new MemoryGameDAO();
+        authDAO = new MySQLAuthDAO();
+        userDAO = new MySQLUserDAO();
+        gameDAO = new MySQLGameDAO();
         loginService = new LoginService(userDAO, authDAO);
         registerService = new RegisterService(userDAO,authDAO);
         new ClearService(authDAO, userDAO, gameDAO).clear();
 
-        res = registerService.register(new RegisterRequest("p3", BCrypt.hashpw("pass", BCrypt.gensalt()), "email"));
+        res = registerService.register(new RegisterRequest("p3", "pass", "email"));
         user = userDAO.getUser(res.username());
-        res2 = registerService.register(new RegisterRequest("p4", BCrypt.hashpw("pass2", BCrypt.gensalt()), "email2"));
+        res2 = registerService.register(new RegisterRequest("p4", "pass2", "email2"));
         user2 = userDAO.getUser(res2.username());
 
     }
