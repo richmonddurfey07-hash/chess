@@ -44,7 +44,7 @@ class SQLGameServiceTest {
     }
 
     @Test
-    public void ListGamesSQL() throws Exception{
+    public void listGamesSQL() throws Exception{
         int gameID = gameService.create(new CreateRequest("Game",validToken)).gameID();
         ListResult games = gameService.listGames(validToken);
         assertNotNull(games);
