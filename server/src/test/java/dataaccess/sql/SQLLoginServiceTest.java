@@ -38,13 +38,13 @@ class SQLLoginServiceTest {
 
     }
     @Test
-    public void loginUnsuccess() throws Exception {
+    public void loginUnsuccessSQL() throws Exception {
         assertThrows(DataAccessException.class, () ->
                 loginService.login(new LoginRequest(res.username(),user2.password())));
     }
 
     @Test
-    public void loginSuccess() throws Exception{
+    public void loginSuccessSQL() throws Exception{
         LoginResult result = loginService.login(new LoginRequest(res.username(),"pass"));
         assertEquals(result.username(),user.username());
     }

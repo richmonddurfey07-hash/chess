@@ -34,7 +34,7 @@ class SQLGameServiceTest {
         otherAuth = registerService.register(new RegisterRequest("p4", "pass", "email2")).authToken();
     }
     @Test
-    public void joinGameColorTaken() throws Exception {
+    public void joinGameColorTakenSQL() throws Exception {
         int gameID = gameService.create(new CreateRequest("Game",validToken)).gameID();
         gameService.join(new JoinRequest("BLACK", gameID,validToken));
 
@@ -44,14 +44,14 @@ class SQLGameServiceTest {
     }
 
     @Test
-    public void listGames() throws Exception{
+    public void ListGamesSQL() throws Exception{
         int gameID = gameService.create(new CreateRequest("Game",validToken)).gameID();
         ListResult games = gameService.listGames(validToken);
         assertNotNull(games);
     }
 
     @Test
-    public void listGamesUnsuccessful() throws Exception{
+    public void listGamesUnsuccessfulSQL() throws Exception{
         assertThrows(DataAccessException.class, () ->
                 gameService.create(new CreateRequest("Game","1")).gameID()
         );
@@ -59,7 +59,7 @@ class SQLGameServiceTest {
     }
 
     @Test
-    public void joinGameColorBad() throws Exception {
+    public void joinGameColorBadSQL() throws Exception {
         int gameID = gameService.create(new CreateRequest("Game",validToken)).gameID();
         assertThrows(DataAccessException.class, () ->
                 gameService.join(new JoinRequest("GREEN", gameID,otherAuth))
@@ -67,7 +67,7 @@ class SQLGameServiceTest {
     }
 
     @Test
-    public void joinBothGameColor() throws Exception {
+    public void joinBothGameColorSQL() throws Exception {
         int gameID = gameService.create(new CreateRequest("Game",validToken)).gameID();
         gameService.join(new JoinRequest("WHITE", gameID,validToken));
         assertEquals(new JoinResult(),

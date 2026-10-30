@@ -38,14 +38,14 @@ class SQLLogoutServiceTest {
 
     }
     @Test
-    public void logoutUnsuccess() throws Exception {
+    public void logoutUnsuccessSQL() throws Exception {
         logoutService.logout(res.authToken());
         assertThrows(DataAccessException.class, () ->
                 logoutService.logout(res.authToken()));
     }
 
     @Test
-    public void logoutSuccess() throws Exception{
+    public void logoutSuccessSQL() throws Exception{
         LogoutResult result = logoutService.logout(res.authToken());
         assertNotNull(result);
     }
