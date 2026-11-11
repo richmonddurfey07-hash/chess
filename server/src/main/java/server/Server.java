@@ -124,7 +124,7 @@ public class Server {
         try{
             String authToken = ctx.header("Authorization");
             GameData body = new Gson().fromJson(ctx.body(), (Type) GameData.class);
-            CreateRequest req = new CreateRequest(body.gameName(),authToken);
+            CreateRequest req = new CreateRequest(body.gameName(), authToken);
             CreateResult res = gameService.create(req);
             ctx.status(200);
             ctx.result(new Gson().toJson(res));
@@ -137,7 +137,7 @@ public class Server {
         try{
             String authToken = ctx.header("Authorization");
             JoinRequest body = new Gson().fromJson(ctx.body(), (Type) JoinRequest.class);
-            JoinRequest req = new JoinRequest(body.playerColor(),body.gameID(),authToken);
+            JoinRequest req = new JoinRequest(body.playerColor(),body.gameID(), authToken);
             JoinResult res = gameService.join(req);
             ctx.status(200);
             ctx.result(new Gson().toJson(res));

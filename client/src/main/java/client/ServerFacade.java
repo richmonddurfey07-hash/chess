@@ -45,14 +45,14 @@ public class ServerFacade {
     }
 
     public CreateResult createGames(String gameName, String authToken) throws DataAccessException {
-        var req = new CreateRequest(gameName);
+        var req = new CreateRequest(gameName, authToken);
         var request = buildRequest("POST", "/game", authToken, req);
         var response = sendRequest(request);
         return handleResponse(response, CreateResult.class);
     }
 
     public JoinResult joinGames(String playerColor, int gameID, String authToken) throws DataAccessException {
-        var req = new JoinRequest(playerColor,gameID);
+        var req = new JoinRequest(playerColor,gameID, authToken);
         var request = buildRequest("PUT", "/game", authToken, req);
         var response = sendRequest(request);
         return handleResponse(response, JoinResult.class);
@@ -107,5 +107,11 @@ public class ServerFacade {
 
     private boolean isSuccessful(int status) {
         return status / 100 == 2;
+    }
+
+    public void clear() throws DataAccessException{
+        var request = buildRequest("DELETE", "/db", null, null);
+        var response = sendRequest(request);
+        handleResponse(response, null);
     }
 }
