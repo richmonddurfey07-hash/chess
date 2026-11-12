@@ -1,10 +1,10 @@
 package client;
 
 import chess.*;
-import dataaccess.DataAccessException;
+
 import model.GameData;
 import model.LoginRequest;
-
+import exception.ResponseException;
 import java.util.*;
 
 import static ui.EscapeSequences.*;
@@ -68,45 +68,45 @@ public class ClientMain {
                 case "quit" -> "quit";
                 default -> help();
             };
-        } catch (DataAccessException ex) {
+        } catch (ResponseException ex) {
             return ex.getMessage();
         }
     }
 
-    public String register(String... params) throws DataAccessException {
+    public String register(String... params) throws ResponseException {
         if (params.length >= 3) {
             try{
                 var result = server.register(params[0],params[1], params[2]);
                 state = State.SIGNEDIN;
                 return login(params[0],params[1]);
-            } catch (DataAccessException e) {
+            } catch (ResponseException e) {
                 return e.getMessage();
             }
         }
-        throw new DataAccessException("");
+        throw new ResponseException(401,"Please provide Username, passowrd, and email");
     }
 
-    public String login(String... params) throws DataAccessException {
+    public String login(String... params) throws ResponseException {
         if (params.length >= 2) {
             try{
                 var result = server.login(new LoginRequest(params[0], params[1]));
                 state = State.SIGNEDIN;
                 authToken = result.authToken();
                 return String.format("You signed in as %s.", params[0]);
-            } catch (DataAccessException e) {
+            } catch (ResponseException e) {
                 return e.getMessage();
             }
         }
-        throw new DataAccessException("Unvalid username or password");
+        throw new ResponseException(401,"Unvalid username or password");
     }
 
-    private String logout() throws DataAccessException{
+    private String logout() throws ResponseException{
         try{
             var result = server.logout(authToken);
             state = State.SIGNEDOUT;
             authToken = null;
             return "You signed out";
-        } catch (DataAccessException e){
+        } catch (ResponseException e){
             return e.getMessage();
         }
     }
@@ -127,7 +127,7 @@ public class ClientMain {
                     board = BoardDrawer.drawBlack();
                 }
                 return board + SET_TEXT_COLOR_BLUE + "You successfully joined the game";
-            } catch (DataAccessException e) {
+            } catch (ResponseException e) {
                 return e.getMessage();
             }
         }
@@ -145,7 +145,7 @@ public class ClientMain {
                         i++, game.gameName(), game.whiteUsername(), game.blackUsername()));
             }
             return result.toString();
-        } catch (DataAccessException e){
+        } catch (ResponseException e){
             return e.getMessage();
         }
     }
@@ -155,7 +155,7 @@ public class ClientMain {
             try {
                 var result = server.createGames(params[0], authToken);
                 return String.format("Game %s created",params[0]);
-            } catch (DataAccessException e) {
+            } catch (ResponseException e) {
                 return e.getMessage();
             }
         }
