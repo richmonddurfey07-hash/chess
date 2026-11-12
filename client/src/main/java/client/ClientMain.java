@@ -5,9 +5,8 @@ import dataaccess.DataAccessException;
 import model.GameData;
 import model.LoginRequest;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Scanner;
+import java.util.*;
+
 import static ui.EscapeSequences.*;
 
 
@@ -18,6 +17,8 @@ public class ClientMain {
     public ClientMain(String url) {
         server = new ServerFacade(url);
     }
+    private List<GameData> gamesList = new ArrayList<>();
+    private String board;
 
     public static void main(String[] args) {
         var serverUrl = "http://localhost:8080";
@@ -114,20 +115,31 @@ public class ClientMain {
     }
 
     private String joinGame(String[] params) {
-        try{
-            var result = server.joinGames(Integer.parseInt(params[0]),params[1],authToken);
-            return "You signed out";
-        } catch (DataAccessException e){
-            return e.getMessage();
+        if(params.length>=2) {
+            try {
+                int gameID = gamesList.get(Integer.parseInt(params[0]) - 1).gameID();
+                var color = params[1].toUpperCase();
+                var games = server.joinGames(gameID, color, authToken);
+                if ("WHITE".equals(color)) {
+                    board = BoardDrawer.drawWhite();
+                } else if ("BLACK".equals(color)) {
+                    board = BoardDrawer.drawBlack();
+                }
+                return board + "You successfully joined the game";
+            } catch (DataAccessException e) {
+                return e.getMessage();
+            }
         }
+        return "Unable to join game";
     }
 
     private String listGames() {
         try{
-            Collection<GameData> games = server.listGames(authToken).games();
+            var games = server.listGames(authToken);
+            gamesList = new ArrayList<>(games.games());
             StringBuilder result = new StringBuilder();
             int i = 1;
-            for (var game : games) {
+            for (var game : gamesList) {
                 result.append(String.format("%d. %s (White: %s, Black: %s)\n",
                         i++, game.gameName(), game.whiteUsername(), game.blackUsername()));
             }
