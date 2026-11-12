@@ -51,7 +51,7 @@ public class ServerFacade {
         return handleResponse(response, CreateResult.class);
     }
 
-    public JoinResult joinGames(String playerColor, int gameID, String authToken) throws DataAccessException {
+    public JoinResult joinGames(int gameID, String playerColor, String authToken) throws DataAccessException {
         var req = new JoinRequest(playerColor,gameID, authToken);
         var request = buildRequest("PUT", "/game", authToken, req);
         var response = sendRequest(request);

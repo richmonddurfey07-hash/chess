@@ -6,29 +6,36 @@ import model.LoginRequest;
 
 import java.util.Arrays;
 import java.util.Scanner;
+import static ui.EscapeSequences.*;
 
-import static java.awt.Color.BLUE;
-import static java.awt.Color.GREEN;
-import static jdk.javadoc.internal.doclets.formats.html.markup.HtmlAttr.InputType.RESET;
 
 public class ClientMain {
-    private static State state;
-    private static ServerFacade server;
+    private State state = State.SIGNEDOUT;
+    private ServerFacade server;
+    private String authToken;
+    public ClientMain(String url) {
+        server = new ServerFacade(url);
+    }
 
     public static void main(String[] args) {
+        var serverUrl = "http://localhost:8080";
+        new ClientMain(serverUrl).run();
+    }
+
+    public void run() {
         var piece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
         System.out.println("♕ 240 Chess Client: " + piece);
         System.out.print(help());
 
         Scanner scanner = new Scanner(System.in);
         var result = "";
-        while (!result.equals("quit")) {
+        while (!"quit".equals(result)) {
             printPrompt();
             String line = scanner.nextLine();
 
             try {
                 result = eval(line);
-                System.out.print(BLUE + result);
+                System.out.print(SET_TEXT_COLOR_BLUE + result);
             } catch (Throwable e) {
                 var msg = e.toString();
                 System.out.print(msg);
@@ -37,13 +44,13 @@ public class ClientMain {
         System.out.println();
     }
 
-    private static void printPrompt() {
-        System.out.print("\n" + RESET + ">>> " + GREEN);
+    private void printPrompt() {
+        System.out.print("\n" + RESET_TEXT_BLINKING + ">>> " + SET_TEXT_COLOR_GREEN);
     }
 
 
 
-    public static String eval(String input) {
+    public String eval(String input) {
         try {
             String[] tokens = input.toLowerCase().split(" ");
             String cmd = (tokens.length > 0) ? tokens[0] : "help";
@@ -64,7 +71,7 @@ public class ClientMain {
         }
     }
 
-    public static String register(String... params) throws DataAccessException {
+    public String register(String... params) throws DataAccessException {
         if (params.length >= 3) {
             try{
                 var result = server.register(params[0],params[1], params[2]);
@@ -77,11 +84,12 @@ public class ClientMain {
         throw new DataAccessException("");
     }
 
-    public static String login(String... params) throws DataAccessException {
+    public String login(String... params) throws DataAccessException {
         if (params.length >= 2) {
             try{
                 var result = server.login(new LoginRequest(params[0], params[1]));
                 state = State.SIGNEDIN;
+                authToken = result.authToken();
                 return String.format("You signed in as %s.", params[0]);
             } catch (DataAccessException e) {
                 return e.getMessage();
@@ -90,31 +98,49 @@ public class ClientMain {
         throw new DataAccessException("Unvalid username or password");
     }
 
-    private static String logout() {
+    private String logout() throws DataAccessException{
+        try{
+            var result = server.logout(authToken);
+            state = State.SIGNEDOUT;
+            authToken = null;
+            return "You signed out";
+        } catch (DataAccessException e){
+            return e.getMessage();
+        }
+    }
+
+    private String observeGame(String[] params) {
         return null;
     }
 
-    private static String observeGame(String[] params) {
+    private String joinGame(String[] params) {
+        try{
+            var result = server.joinGames(Integer.parseInt(params[0]),params[1],authToken);
+            return "You signed out";
+        } catch (DataAccessException e){
+            return e.getMessage();
+        }
+    }
+
+    private String listGames() {
+        try{
+            var result = server.listGames(authToken);
+            return "You signed out";
+        } catch (DataAccessException e){
+            return e.getMessage();
+        }
+    }
+
+    private String createGame() {
         return null;
     }
 
-    private static String joinGame(String[] params) {
-        return null;
-    }
-
-    private static String listGames() {
-        return null;
-    }
-
-    private static String createGame() {
-        return null;
-    }
-
-    public static String help() {
+    public String help() {
         if (state == State.SIGNEDOUT) {
             return """
                     - register <username><password><email>
                     - login <username><password>
+                    - help
                     - quit
                     """;
         }
