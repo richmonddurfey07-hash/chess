@@ -2,9 +2,11 @@ package client;
 
 import chess.*;
 import dataaccess.DataAccessException;
+import model.GameData;
 import model.LoginRequest;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Scanner;
 import static ui.EscapeSequences.*;
 
@@ -23,9 +25,7 @@ public class ClientMain {
     }
 
     public void run() {
-        var piece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
-        System.out.println("♕ 240 Chess Client: " + piece);
-        System.out.print(help());
+        System.out.println("♕ 240 Chess Client. Type help to get started. ♕" );
 
         Scanner scanner = new Scanner(System.in);
         var result = "";
@@ -58,7 +58,7 @@ public class ClientMain {
             return switch (cmd) {
                 case "register" -> register(params);
                 case "login" -> login(params);
-                case "create" -> createGame();
+                case "create" -> createGame(params);
                 case "list" -> listGames();
                 case "join" -> joinGame(params);
                 case "observe" -> observeGame(params);
@@ -124,15 +124,29 @@ public class ClientMain {
 
     private String listGames() {
         try{
-            var result = server.listGames(authToken);
-            return "You signed out";
+            Collection<GameData> games = server.listGames(authToken).games();
+            StringBuilder result = new StringBuilder();
+            int i = 1;
+            for (var game : games) {
+                result.append(String.format("%d. %s (White: %s, Black: %s)\n",
+                        i++, game.gameName(), game.whiteUsername(), game.blackUsername()));
+            }
+            return result.toString();
         } catch (DataAccessException e){
             return e.getMessage();
         }
     }
 
-    private String createGame() {
-        return null;
+    private String createGame(String... params) {
+        if (1 <= params.length) {
+            try {
+                var result = server.createGames(params[0], authToken);
+                return String.format("Game %s created",params[0]);
+            } catch (DataAccessException e) {
+                return e.getMessage();
+            }
+        }
+        return "Please enter a game name";
     }
 
     public String help() {
@@ -150,7 +164,6 @@ public class ClientMain {
                 - join <ID> [White|Black]
                 - observe <ID>
                 - logout
-                - quit
                 """;
     }
 
