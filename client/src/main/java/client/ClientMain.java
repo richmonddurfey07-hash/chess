@@ -125,7 +125,7 @@ public class ClientMain {
                 } else if ("BLACK".equals(color)) {
                     board = BoardDrawer.drawBlack();
                 }
-                return board + "You successfully joined the game";
+                return board + SET_TEXT_COLOR_BLUE + "You successfully joined the game";
             } catch (DataAccessException e) {
                 return e.getMessage();
             }
