@@ -45,6 +45,7 @@ public class ClientMain {
         System.out.println();
     }
 
+
     private void printPrompt() {
         System.out.print("\n" + RESET_TEXT_BLINKING + ">>> " + SET_TEXT_COLOR_GREEN);
     }
