@@ -62,4 +62,35 @@ public class ServerFacadeTests {
                 facade.login(new LoginRequest("player1","pass")));
     }
 
+    @Test
+    void logoutPositive() throws DataAccessException{
+        var result = facade.register("player1", "password", "p1@email.com");
+        var login = facade.login(new LoginRequest("player1","password"));
+        var logout = facade.logout(login.authToken());
+        Assertions.assertNotNull(logout);
+    }
+
+    @Test
+    void logoutNegative() throws DataAccessException{
+        var result = facade.register("player1", "password", "p1@email.com");
+        Assertions.assertThrows(DataAccessException.class, () ->
+                facade.logout("authToken"));
+    }
+
+    @Test
+    void createPositive() throws DataAccessException{
+        var result = facade.register("player1", "password", "p1@email.com");
+        var login = facade.login(new LoginRequest("player1","password"));
+        var create = facade.createGames("game1",login.authToken());
+        Assertions.assertNotNull(create);
+    }
+
+    @Test
+    void createNegative() throws DataAccessException{
+        var result = facade.register("player1", "password", "p1@email.com");
+        var login = facade.login(new LoginRequest("player1","password"));
+        Assertions.assertThrows(DataAccessException.class, () ->
+                facade.createGames("game1","auth"));
+    }
+
 }
