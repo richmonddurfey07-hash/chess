@@ -7,7 +7,7 @@ public class BoardDrawer {
     public static String drawBlack(){
         StringBuilder string = new StringBuilder();
         drawHeaders("black", string);
-        String[] pieces = {"R","N","B","K","Q","B","N","R"};
+        String[] pieces = {"R","N","B","Q","K","B","N","R"};
         for(int i =1; i<=8; i++){
             string.append(SET_BG_COLOR_LIGHT_GREY).append(" ").append(SET_TEXT_COLOR_BLACK).append(i).append(" ");
             for(int j =8; j>=1; j--){
@@ -56,7 +56,7 @@ public class BoardDrawer {
 
     public static String drawWhite(){
         StringBuilder string = new StringBuilder();
-        String[] pieces = {"R","N","B","K","Q","B","N","R"};
+        String[] pieces = {"R","N","B","Q","K","B","N","R"};
         drawHeaders("white",string);
         for(int i =8; i>=1; i--){
             string.append(SET_BG_COLOR_LIGHT_GREY).append(" ").append(SET_TEXT_COLOR_BLACK).append(i).append(" ");

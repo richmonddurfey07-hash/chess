@@ -47,7 +47,8 @@ public class ClientMain {
 
 
     private void printPrompt() {
-        System.out.print("\n" + RESET_TEXT_BLINKING + ">>> " + SET_TEXT_COLOR_GREEN);
+        System.out.print("\n" + SET_TEXT_COLOR_LIGHT_GREY + "[" + state + "] " + RESET_TEXT_BLINKING +
+                SET_TEXT_COLOR_BLUE + ">>> " + SET_TEXT_COLOR_GREEN);
     }
 
 
@@ -83,7 +84,7 @@ public class ClientMain {
                 return e.getMessage();
             }
         }
-        throw new ResponseException(401,"Please provide Username, passowrd, and email");
+        throw new ResponseException(401,"Please provide Username, password, and email");
     }
 
     public String login(String... params) throws ResponseException {
@@ -94,10 +95,10 @@ public class ClientMain {
                 authToken = result.authToken();
                 return String.format("You signed in as %s.", params[0]);
             } catch (ResponseException e) {
-                return e.getMessage();
+                return "Incorrect username or password";
             }
         }
-        throw new ResponseException(401,"Unvalid username or password");
+        throw new ResponseException(401,"Please enter a username and password");
     }
 
     private String logout() throws ResponseException{
@@ -107,7 +108,7 @@ public class ClientMain {
             authToken = null;
             return "You signed out";
         } catch (ResponseException e){
-            return e.getMessage();
+            return "Not logged in";
         }
     }
 
@@ -116,10 +117,24 @@ public class ClientMain {
     }
 
     private String joinGame(String[] params) {
+        if(state==State.SIGNEDOUT){
+            return "Please login";
+        }
         if(params.length>=2) {
             try {
+                int gameID = Integer.parseInt(params[0]);
+            } catch(ResponseException e){
+                return "Please enter a valid Game ID";
+            }
+            try {
+                if(Integer.parseInt(params[0])>gamesList.size()){
+                    return "Game ID does not exist";
+                }
                 int gameID = gamesList.get(Integer.parseInt(params[0]) - 1).gameID();
                 var color = params[1].toUpperCase();
+                if (!"WHITE".equals(color) && !"BLACK".equals(color)){
+                    return "Please choose White or Black";
+                }
                 var games = server.joinGames(gameID, color, authToken);
                 if ("WHITE".equals(color)) {
                     board = BoardDrawer.drawWhite();
@@ -128,13 +143,16 @@ public class ClientMain {
                 }
                 return board + SET_TEXT_COLOR_BLUE + "You successfully joined the game";
             } catch (ResponseException e) {
-                return e.getMessage();
+                return String.format("%s is occupied. Please choose a different color.",params[1].toUpperCase());
             }
         }
         return "Unable to join game";
     }
 
     private String listGames() {
+        if(state==State.SIGNEDOUT){
+            return "Please login";
+        }
         try{
             var games = server.listGames(authToken);
             gamesList = new ArrayList<>(games.games());
@@ -151,12 +169,15 @@ public class ClientMain {
     }
 
     private String createGame(String... params) {
+        if(state==State.SIGNEDOUT){
+            return "Please login";
+        }
         if (1 <= params.length) {
             try {
                 var result = server.createGames(params[0], authToken);
                 return String.format("Game %s created",params[0]);
             } catch (ResponseException e) {
-                return e.getMessage();
+                return ("Please enter a game name");
             }
         }
         return "Please enter a game name";
